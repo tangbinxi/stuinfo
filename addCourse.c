@@ -3,17 +3,35 @@
 #include <stdlib.h>
 #include <mysql/mysql.h>
 #include "cgic.h"
+char * headname = "head.html";
+char * footname = "footer.html";
+
 
 int cgiMain()
 {
-
+	FILE * fd;
 	fprintf(cgiOut, "Content-type:text/html;charset=utf-8\n\n");
 
-	char Cid[16] = "\0";
-	char Cname[20] = "\0";
-	char Cteacher[20] = "\0";
+
 
 	int status = 0;
+	char ch;
+
+
+	if(!(fd = fopen(headname, "r"))){
+		fprintf(cgiOut, "Cannot open file, %s\n", headname);
+		return -1;
+	}
+	ch = fgetc(fd);
+
+	while(ch != EOF){
+		fprintf(cgiOut, "%c", ch);
+		ch = fgetc(fd);
+	}
+fclose(fd);
+char Cid[16] = "\0";
+char Cname[20] = "\0";
+char Cteacher[20] = "\0";
 
 	status = cgiFormString("Cid",  Cid, 16);
 	if (status != cgiFormSuccess)

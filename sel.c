@@ -5,16 +5,17 @@
 #include <mysql/mysql.h>
 #include "cgic.h"
 
+char * headname = "head.html";
+char * footname = "footer.html";
+
 
 int cgiMain()
 {
 
+	FILE * fd;
+
 	fprintf(cgiOut, "Content-type:text/html;charset=utf-8\n\n");
-/*	fprintf(cgiOut, "<head><meta charset=\"utf-8\"/><title>查询结果</title>\
-			<style>table {width:400px; margin: 50px auto; border: 1px solid gray; border-collapse: collapse; border-spacing: none; text-align:center;}\
-			tr,td,th{border: 1px solid gray;}\
-			</style>\
-			</head>");*/
+
 
 	fprintf(cgiOut, "<head><meta charset=\"utf-8\"><title>查询结果</title>\
 		    <link rel=\"stylesheet\" href=\"/stu/public/css/bootstrap.min.css\">\
@@ -22,6 +23,20 @@ int cgiMain()
 
 	char name[32] = "\0";
 	int status = 0;
+	char ch;
+
+	fprintf(cgiOut, "Content-type:text/html;charset=utf-8\n\n");
+	if(!(fd = fopen(headname, "r"))){
+		fprintf(cgiOut, "Cannot open file, %s\n", headname);
+		return -1;
+	}
+	ch = fgetc(fd);
+
+	while(ch != EOF){
+		fprintf(cgiOut, "%c", ch);
+		ch = fgetc(fd);
+	}
+fclose(fd);
 
 	status = cgiFormString("name",  name, 32);
 	if (status != cgiFormSuccess)
@@ -36,11 +51,11 @@ int cgiMain()
 
 	if (name[0] == '*')
 	{
-		sprintf(sql, "select * from stu,Score,Course where stu.id=Score.id and Course.Cid=Score.Cid and stu.sta=0");
+		sprintf(sql, "select * from stu,Score,Course where stu.id=Score.id and Course.Cid=Score.Cid and stu.sta=1");
 	}
 	else
 	{
-		sprintf(sql, "select * from stu,Course,Score where name = '%s' and stu.id=Score.id and Course.Cid=Score.Cid and stu.sta=0", name);
+		sprintf(sql, "select * from stu,Course,Score where name = '%s' and stu.id=Score.id and Course.Cid=Score.Cid and stu.sta=1", name);
 	}
 
 

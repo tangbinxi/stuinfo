@@ -56,3 +56,4 @@ int cgiMain()
 	mysql_close(db);
 
 	return 0;
+}
